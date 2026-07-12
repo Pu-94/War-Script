@@ -1,568 +1,827 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>星尘之下 · 战争脚本 | 五大势力 卡牌战略对决</title>
-    <!-- Font Awesome 6 免费图标库 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>星尘之下 · WAR SCRIPT</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+      :root {
+        --bg: #04070f;
+        --panel: rgba(10, 16, 33, 0.82);
+        --panel-strong: rgba(12, 19, 37, 0.94);
+        --text: #f4f3ff;
+        --muted: #8fa0c7;
+        --gold: #f7c96b;
+        --blue: #5ddcff;
+        --purple: #b27cff;
+        --red: #ff7b5f;
+        --green: #63f4b0;
+        --border: rgba(255, 255, 255, 0.14);
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(93, 220, 255, 0.18), transparent 28%),
+          radial-gradient(circle at 80% 20%, rgba(178, 124, 255, 0.2), transparent 22%),
+          linear-gradient(135deg, #03050a 0%, #060d18 55%, #02040b 100%);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      canvas {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 24px 24px 60px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 24px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(6, 11, 23, 0.7);
+        backdrop-filter: blur(18px);
+        box-shadow: var(--shadow);
+        position: sticky;
+        top: 18px;
+        z-index: 20;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .brand-badge {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--gold), var(--blue));
+        color: #071119;
+        font-size: 18px;
+      }
+
+      .nav {
+        display: flex;
+        gap: 20px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .nav a {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.25s ease;
+      }
+
+      .nav a:hover {
+        color: var(--text);
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn {
+        border: 1px solid transparent;
+        border-radius: 999px;
+        padding: 10px 16px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-primary {
+        color: #031321;
+        background: linear-gradient(135deg, var(--gold), #ffe08f);
+        box-shadow: 0 10px 30px rgba(247, 201, 107, 0.26);
+      }
+
+      .btn-ghost {
+        color: var(--text);
+        border-color: var(--border);
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        color: var(--gold);
+        font-weight: 600;
+        margin-right: 10px;
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: rgba(247, 201, 107, 0.12);
+      }
+
+      .lang-switch {
+        display: flex;
+        gap: 6px;
+        margin-right: 12px;
+      }
+
+      .lang-btn {
+        padding: 6px 12px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.25s ease;
+      }
+
+      .lang-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .lang-btn.active {
+        background: rgba(93, 220, 255, 0.15);
+        color: var(--blue);
+        border-color: var(--blue);
+      }
+
+      .hero {
+        margin-top: 36px;
+        padding: 72px 46px;
+        border-radius: 32px;
+        background: linear-gradient(120deg, rgba(8, 19, 38, 0.95), rgba(6, 10, 24, 0.8));
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::before,
+      .hero::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(40px);
+        opacity: 0.4;
+        pointer-events: none;
+      }
+
+      .hero::before {
+        width: 260px;
+        height: 260px;
+        background: rgba(93, 220, 255, 0.22);
+        top: -60px;
+        right: -80px;
+      }
+
+      .hero::after {
+        width: 220px;
+        height: 220px;
+        background: rgba(178, 124, 255, 0.22);
+        bottom: -70px;
+        left: -40px;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        padding: 8px 14px;
+        border: 1px solid rgba(247, 201, 107, 0.3);
+        border-radius: 999px;
+        background: rgba(247, 201, 107, 0.12);
+        color: var(--gold);
+        font-size: 0.9rem;
+        margin-bottom: 22px;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.2rem, 4vw, 3.6rem);
+        line-height: 1.1;
+        margin: 0 0 14px;
+        letter-spacing: 0.04em;
+      }
+
+      .hero h1 span {
+        background: linear-gradient(90deg, var(--gold), #fff0bb 45%, var(--blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        max-width: 760px;
+        font-size: 1.05rem;
+        line-height: 1.9;
+        color: #ccd3eb;
+        margin: 0 0 30px;
+      }
+
+      .hero .cta-row {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+      }
+
+      .hero .meta {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .section {
+        margin-top: 26px;
+        padding: 30px;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        backdrop-filter: blur(16px);
+        box-shadow: var(--shadow);
+      }
+
+      .section-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .section-title h2 {
+        margin: 0;
+        font-size: 1.35rem;
+      }
+
+      .section-title .sub {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .factions-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .faction-card {
+        position: relative;
+        padding: 22px 18px;
+        border-radius: 20px;
+        color: var(--text);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        overflow: hidden;
+        min-height: 220px;
+      }
+
+      .faction-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(255,255,255,0.3);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.24);
+      }
+
+      .faction-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top right, rgba(255,255,255,0.14), transparent 45%);
+        pointer-events: none;
+      }
+
+      .faction-card .icon {
+        font-size: 1.6rem;
+        margin-bottom: 6px;
+      }
+
+      .faction-card h3 {
+        margin: 0 0 8px;
+        font-size: 1.08rem;
+      }
+
+      .faction-card .tag {
+        display: inline-block;
+        padding: 5px 10px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 999px;
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+
+      .faction-card .desc {
+        font-size: 0.92rem;
+        line-height: 1.7;
+        color: #dfe5f3;
+      }
+
+      .faction-card[data-color="gold"] { box-shadow: inset 0 0 0 1px rgba(247, 201, 107, 0.18); }
+      .faction-card[data-color="purple"] { box-shadow: inset 0 0 0 1px rgba(178, 124, 255, 0.18); }
+      .faction-card[data-color="blue"] { box-shadow: inset 0 0 0 1px rgba(93, 220, 255, 0.18); }
+      .faction-card[data-color="red"] { box-shadow: inset 0 0 0 1px rgba(255, 123, 95, 0.18); }
+      .faction-card[data-color="green"] { box-shadow: inset 0 0 0 1px rgba(99, 244, 176, 0.18); }
+
+      .story-card {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 22px;
+        align-items: center;
+      }
+
+      .story-panel {
+        padding: 24px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .story-panel blockquote {
+        margin: 0 0 16px;
+        font-size: 1.12rem;
+        line-height: 1.9;
+        color: #f7f3ff;
+      }
+
+      .story-panel p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .scroll-box {
+        padding: 20px;
+        border-radius: 20px;
+        background: rgba(4, 8, 16, 0.68);
+        border: 1px solid rgba(255,255,255,0.08);
+        min-height: 220px;
+      }
+
+      .scroll-box h3 {
+        margin-top: 0;
+        color: var(--gold);
+      }
+
+      .scroll-box ul {
+        margin: 0;
+        padding-left: 18px;
+        color: #dce2f8;
+        line-height: 1.8;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .feature-card {
+        padding: 22px;
+        border-radius: 18px;
+        background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.025));
+        border: 1px solid rgba(255,255,255,0.09);
+        min-height: 170px;
+      }
+
+      .feature-card .icon {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+      }
+
+      .feature-card h3 {
+        margin: 0 0 8px;
+        font-size: 1.08rem;
+      }
+
+      .feature-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .stat-box {
+        text-align: center;
+        padding: 24px 10px;
+        border-radius: 16px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .stat-box .number {
+        display: block;
+        font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+        font-weight: 700;
+        color: var(--gold);
+        margin-bottom: 8px;
+      }
+
+      .stat-box .label {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      footer {
+        margin-top: 28px;
+        text-align: center;
+        padding: 28px 16px 8px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      @media (max-width: 980px) {
+        .factions-grid,
+        .features-grid,
+        .stats {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
-        body {
-            background-color: #050b17;
-            font-family: 'Segoe UI', 'Poppins', 'Orbitron', system-ui, -apple-system, 'Inter', sans-serif;
-            color: #eef5ff;
-            scroll-behavior: smooth;
-            overflow-x: hidden;
+        .story-card {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .page {
+          padding: 16px 16px 40px;
         }
 
-        /* 深邃星空动态背景 */
-        .star-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            background: radial-gradient(ellipse at 30% 40%, #0a1428, #02040c);
+        .topbar {
+          flex-wrap: wrap;
+          gap: 12px;
+          border-radius: 20px;
         }
 
-        .star-bg::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(2px 2px at 15% 30%, #fff, rgba(0,0,0,0)),
-                radial-gradient(3px 3px at 75% 60%, #f0f, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 90% 20%, #0ff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 45% 85%, #ffd966, rgba(0,0,0,0));
-            background-size: 200px 200px, 300px 300px, 150px 150px, 250px 250px;
-            background-repeat: no-repeat;
-            opacity: 0.6;
-            animation: drift 80s linear infinite;
-        }
-
-        @keyframes drift {
-            0% { background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%; }
-            100% { background-position: 500px 500px, -300px 400px, 200px -200px, -400px -300px; }
-        }
-
-        /* 星尘飘浮特效 */
-        .dust {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200"><circle cx="20" cy="30" r="1.5" fill="%23ffffff" opacity="0.3"/><circle cx="120" cy="180" r="2" fill="%23aaddff" opacity="0.4"/><circle cx="340" cy="70" r="1" fill="%23ffffff" opacity="0.6"/><circle cx="500" cy="400" r="2.5" fill="%23cceeff" opacity="0.2"/><circle cx="650" cy="800" r="1.5" fill="%23ffffff" opacity="0.5"/><circle cx="780" cy="200" r="1" fill="%23aaccff" opacity="0.4"/><circle cx="90" cy="950" r="2" fill="%23ffffff" opacity="0.3"/></svg>');
-            background-repeat: repeat;
-            opacity: 0.25;
-            animation: floatDust 60s linear infinite;
-        }
-
-        @keyframes floatDust {
-            0% { transform: translateY(0px); }
-            100% { transform: translateY(-200px); }
-        }
-
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 2rem 2rem 4rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(72, 187, 255, 0.2);
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 3rem;
-        }
-
-        .logo h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #C0E0FF, #5B8CFF);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: 2px;
-        }
-
-        .logo p {
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            color: #7e9ed9;
-        }
-
-        .nav-links a {
-            color: #ccdeff;
-            margin-left: 2rem;
-            text-decoration: none;
-            font-weight: 500;
-            transition: 0.3s;
-            font-size: 1rem;
-        }
-
-        .nav-links a:hover {
-            color: #6ea8fe;
-            text-shadow: 0 0 5px #2f6eff;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 2rem;
-            border-radius: 40px;
-            font-weight: bold;
-            text-decoration: none;
-            transition: 0.25s;
-            cursor: pointer;
-            border: none;
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(95deg, #2b5eff, #904eff);
-            color: white;
-            box-shadow: 0 4px 14px rgba(46, 90, 255, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 20px rgba(46, 90, 255, 0.6);
-            background: linear-gradient(95deg, #3f6eff, #a25eff);
-        }
-
-        .btn-outline {
-            border: 1.5px solid #3c7eff;
-            background: transparent;
-            color: #cae0ff;
-        }
-
-        .btn-outline:hover {
-            background: rgba(60, 126, 255, 0.15);
-            border-color: #8bbaff;
-            color: white;
+        .nav {
+          width: 100%;
+          justify-content: center;
+          flex-wrap: wrap;
         }
 
         .hero {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            margin: 3rem 0 5rem;
-            gap: 2rem;
+          padding: 36px 22px;
         }
 
-        .hero-text {
-            flex: 1.2;
+        .section {
+          padding: 22px;
         }
 
-        .hero-text .badge {
-            background: rgba(0, 20, 60, 0.7);
-            backdrop-filter: blur(4px);
-            padding: 0.3rem 1rem;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            width: fit-content;
-            border-left: 3px solid #3e7eff;
-            margin-bottom: 1.5rem;
+        .factions-grid,
+        .features-grid,
+        .stats {
+          grid-template-columns: 1fr;
         }
-
-        .hero-text h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            line-height: 1.2;
-            background: linear-gradient(to right, #FFFFFF, #9bc5ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 1rem;
-        }
-
-        .hero-text p {
-            font-size: 1.2rem;
-            color: #bcd0ff;
-            margin-bottom: 2rem;
-            max-width: 550px;
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: 2rem;
-            margin-top: 1rem;
-        }
-
-        .stat {
-            font-size: 0.9rem;
-        }
-
-        .stat strong {
-            font-size: 1.6rem;
-            display: block;
-            color: white;
-        }
-
-        .hero-visual {
-            flex: 0.9;
-            background: rgba(12, 25, 55, 0.5);
-            border-radius: 32px;
-            padding: 1rem;
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(60, 126, 255, 0.4);
-            text-align: center;
-        }
-
-        .card-symbol {
-            font-size: 4rem;
-            filter: drop-shadow(0 0 12px #2f6eff);
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.2rem;
-            margin: 4rem 0 2rem;
-            font-weight: 700;
-        }
-
-        .section-title span {
-            background: linear-gradient(135deg, #E0F0FF, #7196ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        /* 五阵营网格布局 */
-        .factions-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);  /* 改为固定5列，每列等宽 */
-            gap: 1.8rem;
-            margin: 2rem 0;
-        }
-
-        .faction-card {
-            background: rgba(8, 18, 35, 0.7);
-            backdrop-filter: blur(4px);
-            border-radius: 28px;
-            padding: 1.8rem;
-            border: 1px solid rgba(72, 129, 255, 0.3);
-            transition: all 0.2s;
-        }
-
-        .faction-card:hover {
-            border-color: #4c86ff;
-            transform: translateY(-5px);
-            background: rgba(12, 28, 52, 0.8);
-        }
-
-        .faction-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .faction-card h3 {
-            font-size: 1.6rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .faction-desc {
-            color: #b9ceff;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        .split-note {
-            font-size: 0.7rem;
-            background: #1a2a4a;
-            display: inline-block;
-            padding: 0.2rem 0.7rem;
-            border-radius: 20px;
-            margin-top: 0.8rem;
-            color: #bbd4ff;
-        }
-
-        .story {
-            background: linear-gradient(145deg, #07102b, #010617);
-            border-radius: 48px;
-            padding: 2.5rem;
-            margin: 4rem 0;
-            border: 1px solid #2a4b9b;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.5);
-        }
-
-        .story p {
-            font-size: 1.05rem;
-            line-height: 1.6;
-            color: #d4e2ff;
-            margin-bottom: 1rem;
-        }
-
-        .quote {
-            border-left: 4px solid #4c86ff;
-            padding-left: 1.5rem;
-            font-style: italic;
-            margin: 1.5rem 0;
-        }
-
-        .game-cta {
-            text-align: center;
-            background: radial-gradient(ellipse at 50% 0%, #14274e, #020617);
-            border-radius: 60px;
-            padding: 3rem 2rem;
-            margin: 3rem 0;
-        }
-
-        .game-cta h2 {
-            font-size: 2.5rem;
-        }
-
-        .play-btn {
-            font-size: 1.4rem;
-            padding: 1rem 2.8rem;
-            margin-top: 1.5rem;
-            background: linear-gradient(135deg, #ff7b2c, #ff3c6c);
-            box-shadow: 0 0 20px rgba(255, 60, 108, 0.4);
-        }
-
-        .leader-row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1.5rem;
-            margin: 2rem 0 1rem;
-        }
-        .leader-badge {
-            background: rgba(0,0,0,0.5);
-            border-radius: 40px;
-            padding: 0.5rem 1.2rem;
-            font-size: 0.85rem;
-            backdrop-filter: blur(2px);
-        }
-        hr {
-            border-color: #28456e;
-            margin: 2rem 0;
-        }
-        footer {
-            text-align: center;
-            margin-top: 5rem;
-            padding: 1rem;
-            font-size: 0.8rem;
-            color: #6688bb;
-        }
-
-        @media (max-width: 800px) {
-            .hero-text h1 { font-size: 2.4rem; }
-            .container { padding: 1rem; }
-            .nav-links a { margin-left: 1rem; font-size: 0.9rem; }
-            .hero-stats { flex-wrap: wrap; gap: 1rem; }
-            .section-title { font-size: 1.8rem; }
-            .game-cta h2 { font-size: 1.8rem; }
-        }
-        .highlight {
-            color: #ffbe5e;
-        }
-        i.fab, i.fas {
-            margin-right: 6px;
-        }
+      }
     </style>
-</head>
-<body>
-<div class="star-bg"></div>
-<div class="dust"></div>
-
-<div class="container">
-    <!-- 导航栏 -->
-    <div class="navbar">
-        <div class="logo">
-            <h1>✨ 星尘之下 · WAR SCRIPT</h1>
-            <p>五大势力 · 卡牌战略对决</p>
+  </head>
+  <body>
+    <canvas id="starfield"></canvas>
+    <div class="page">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-badge">⚔</div>
+          <span>星尘之下 · WAR SCRIPT</span>
         </div>
-        <div class="nav-links">
-            <a href="#story">纪元史诗</a>
-            <a href="#factions">五大阵营</a>
-            <a href="game">进入游戏</a>
+        <nav class="nav">
+          <a href="#factions" data-i18n="nav_factions">势力</a>
+          <a href="#story" data-i18n="nav_story">星史</a>
+          <a href="#features" data-i18n="nav_features">特色</a>
+          <a href="#stats" data-i18n="nav_stats">数据</a>
+        </nav>
+        <div class="actions" id="auth-actions">
+          <div class="lang-switch">
+            <button id="lang-zh" class="lang-btn active">中文</button>
+            <button id="lang-en" class="lang-btn">EN</button>
+          </div>
+          <a class="btn btn-ghost" href="login/index.html" data-i18n="login">登录</a>
+          <a class="btn btn-primary" href="#" data-i18n="enter_game">进入游戏</a>
         </div>
-    </div>
-
-    <!-- Hero 主视觉 -->
-    <div class="hero">
-        <div class="hero-text">
-            <div class="badge"><i class="fas fa-dragon"></i> 命运序曲 · 星尘之战</div>
-            <h1>战争脚本<br>由你改写</h1>
-            <p>科技 · 深海 · 虚空 · 蛮力 · 战术 —— 五大势力汇聚星界大陆，百万字恢弘剧情，动态卡牌对决，每一步抉择都将重塑世界线。</p>
-            <div class="hero-stats">
-                <div class="stat"><strong>5</strong> 大争霸势力</div>
-                <div class="stat"><strong>8</strong> 位传奇领袖</div>
-                <div class="stat"><strong>∞</strong> 宿命分支</div>
-            </div>
-            <div style="margin-top: 2rem;">
-                <a href="game" class="btn btn-primary" style="margin-right: 1rem;"><i class="fas fa-play"></i> 即刻开战</a>
-                <a href="#story" class="btn btn-outline"><i class="fas fa-book-open"></i> 阅览星史</a>
-            </div>
+        <div class="actions" id="user-actions" style="display: none;">
+          <div class="lang-switch">
+            <button id="lang-zh-user" class="lang-btn active">中文</button>
+            <button id="lang-en-user" class="lang-btn">EN</button>
+          </div>
+          <span class="user-info"><span data-i18n="welcome">欢迎</span>, <span id="username">用户</span></span>
+          <button class="btn btn-ghost" id="logout-btn" data-i18n="logout">登出</button>
+          <a class="btn btn-primary" href="#" data-i18n="enter_game">进入游戏</a>
         </div>
-        <div class="hero-visual">
-            <div class="card-symbol">
-                <i class="fas fa-chess-queen"></i> ⚔️ <i class="fas fa-dragon"></i>
-            </div>
-            <p style="margin-top: 1rem; font-weight: 500;">「蚀星裂变，五方逐鹿」</p>
-            <div style="background:#00000044; border-radius: 20px; padding: 0.6rem; font-size:0.8rem; margin-top: 0.5rem;">
-                <i class="fas fa-shield-alt"></i> 星序 · 黯蚀 · 潮汐 · 铁血 · 听雨
-            </div>
+      </header>
+
+      <section class="hero">
+        <div class="eyebrow" data-i18n="eyebrow">✦ 蚀星裂变 · 五方逐鹿</div>
+        <h1 data-i18n="hero_title"><span>星尘之下</span> · 战争脚本</h1>
+        <p data-i18n="hero_desc">
+          五大势力在裂变的星域中争夺命运，卡牌构筑、兵种相克与分支战役共同编织一部恢弘史诗。
+          你将成为指挥官，在星尘乱流中改写帝国的终局。
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#" data-i18n="enter_game_btn">⚔ 进入游戏</a>
+          <a class="btn btn-ghost" href="#story" data-i18n="read_story">📖 阅览星史</a>
         </div>
-    </div>
+        <div class="meta" data-i18n="meta">已有 12,847 位指挥官集结，开启新的纪元之战。</div>
+      </section>
 
-    <!-- 世界核心：星尘琥珀 -->
-    <div style="text-align: center; margin: 2rem 0;">
-        <i class="fas fa-globe-asia" style="font-size: 3rem; opacity: 0.7;"></i>
-        <p style="max-width: 700px; margin: 1rem auto; color:#acc9ff;">星界大陆悬浮于无尽星尘之间，一半沃野千里、浮空群岛，一半沧溟深海、古老遗迹。曾经强大的蚀星帝国因内乱分裂，五大势力在此争夺霸权，谱写悲壮的命运长诗。</p>
-    </div>
-
-    <!-- 五大阵营 (星序帝国 & 黯蚀王国 明确标注由蚀星帝国分裂) -->
-    <div id="factions">
-        <div class="section-title"><span>✦ 五大争霸势力 ✦</span></div>
+      <section class="section" id="factions">
+        <div class="section-title">
+          <h2 data-i18n="factions_title">✦ 五大争霸势力</h2>
+          <div class="sub" data-i18n="factions_sub">选择你的阵营，改写星尘纪元</div>
+        </div>
         <div class="factions-grid">
-            <!-- 星序帝国 -->
-            <div class="faction-card">
-                <div class="faction-icon"><i class="fas fa-cat"></i> ⚙️</div>
-                <h3>星序帝国 · 秩序复兴</h3>
-                <div class="faction-desc">前蚀星帝国正统继承者，由炌铽领导。以尖端科技与机械军团为核心，信奉「强者方能守护和平」，誓要收复全境，重铸帝国荣耀。</div>
-                <div class="split-note"><i class="fas fa-code-branch"></i> 蚀星帝国分裂·秩序之派</div>
-            </div>
-            <!-- 黯蚀王国 -->
-            <div class="faction-card">
-                <div class="faction-icon"><i class="fas fa-skull"></i> 🌑</div>
-                <h3>黯蚀王国 · 虚空复仇</h3>
-                <div class="faction-desc">前皇帝炌零在废土建立的势力，融合禁忌虚空能量与技术。以复仇为名，誓要摧毁星序帝国，成为蚀星遗产的真正主宰。</div>
-                <div class="split-note"><i class="fas fa-code-branch"></i> 蚀星帝国分裂·黯蚀之派</div>
-            </div>
-            <!-- 潮汐神庭 -->
-            <div class="faction-card">
-                <div class="faction-icon"><i class="fas fa-fish"></i> 🌊</div>
-                <h3>潮汐神庭 · 深海意志</h3>
-                <div class="faction-desc">深海海族的古老神庭，主宰冥汐掌控潮汐与巨兽之力。因上古血仇视喵族为天敌，与铁血堡垒结盟，遏制星序扩张。</div>
-                <div class="split-note"><i class="fas fa-water"></i> 深海霸主 · 潮汐之怒</div>
-            </div>
-            <!-- 铁血堡垒 (原汪族饮血堡垒更名) -->
-            <div class="faction-card">
-                <div class="faction-icon"><i class="fas fa-dog"></i> 🛡️</div>
-                <h3>铁血堡垒 · 蛮力征服</h3>
-                <div class="faction-desc">黑石荒原的狂暴战士联盟，汪十二世统领。信仰力量即荣耀，与潮汐神庭结成铁血同盟，以无匹蛮力横扫战场。</div>
-                <div class="split-note"><i class="fas fa-fist-raised"></i> 力量至上 · 钢铁狂潮</div>
-            </div>
-            <!-- 听雨联邦 -->
-            <div class="faction-card">
-                <div class="faction-icon"><i class="fas fa-feather-alt"></i> 🌧️</div>
-                <h3>听雨联邦 · 云端守望</h3>
-                <div class="faction-desc">浮空群岛的羽族联邦，羽尘领导。崇尚机动战术与和平中立，在五方混战中独善其身，静待终结战火的最佳时机。</div>
-                <div class="split-note"><i class="fas fa-dove"></i> 灵动战术 · 守序中立</div>
-            </div>
+          <article class="faction-card" data-color="gold">
+            <div class="icon">⚙️</div>
+            <h3 data-i18n="faction_1_name">星序帝国</h3>
+            <span class="tag" data-i18n="faction_1_tag">秩序 · 复兴</span>
+            <div class="desc" data-i18n="faction_1_desc">以帝国法典与星轨机甲为剑，重塑旧秩序的荣光。</div>
+          </article>
+          <article class="faction-card" data-color="purple">
+            <div class="icon">🌑</div>
+            <h3 data-i18n="faction_2_name">黯蚀王国</h3>
+            <span class="tag" data-i18n="faction_2_tag">虚空 · 复仇</span>
+            <div class="desc" data-i18n="faction_2_desc">以黑曜与蚀星之力为旗，掀起毁灭与重生的暴风。</div>
+          </article>
+          <article class="faction-card" data-color="blue">
+            <div class="icon">🌊</div>
+            <h3 data-i18n="faction_3_name">潮汐神庭</h3>
+            <span class="tag" data-i18n="faction_3_tag">深海 · 意志</span>
+            <div class="desc" data-i18n="faction_3_desc">由海潮与神谕构成的长老文明，掌控命运的潮汐节奏。</div>
+          </article>
+          <article class="faction-card" data-color="red">
+            <div class="icon">🛡️</div>
+            <h3 data-i18n="faction_4_name">铁血堡垒</h3>
+            <span class="tag" data-i18n="faction_4_tag">蛮力 · 征服</span>
+            <div class="desc" data-i18n="faction_4_desc">强悍的堡垒军团以钢铁与火焰，压碎所有反对之声。</div>
+          </article>
+          <article class="faction-card" data-color="green">
+            <div class="icon">🌧️</div>
+            <h3 data-i18n="faction_5_name">听雨联邦</h3>
+            <span class="tag" data-i18n="faction_5_tag">战术 · 守望</span>
+            <div class="desc" data-i18n="faction_5_desc">以天象与协同为根基，构筑一套最灵活的战场秩序。</div>
+          </article>
         </div>
-    </div>
+      </section>
 
-    <!-- 英雄领袖速览 (无神格神性，仅英雄气场) -->
-    <div class="leader-row">
-        <div class="leader-badge"><i class="fas fa-crown"></i> 炌铽 · 星序之剑</div>
-        <div class="leader-badge"><i class="fas fa-mask"></i> 炌零 · 黯蚀之火</div>
-        <div class="leader-badge"><i class="fas fa-water"></i> 冥汐 · 深海裁决</div>
-        <div class="leader-badge"><i class="fas fa-fist-raised"></i> 汪十二世 · 铁血意志</div>
-        <div class="leader-badge"><i class="fas fa-feather"></i> 羽尘 · 和风统帅</div>
-    </div>
-
-    <!-- 史诗故事概要 (聚焦帝国分裂与五方混战，无神格/虚空神明) -->
-    <div id="story" class="story">
-        <i class="fas fa-scroll" style="font-size: 2rem; margin-bottom: 0.5rem; display: inline-block;"></i>
-        <h2 style="margin-bottom: 1rem;">📜 纪元之卷 · 帝国裂变</h2>
-        <p>蚀星帝国曾是喵族科技巅峰的象征，然而末代皇帝<strong class="highlight">炌零</strong>沉迷权斗，致使国力衰败。汪族大举入侵，帝国几近覆灭。危急关头，将领<strong class="highlight">炌铽</strong>发动政变，以「强者方能守护和平」重建秩序，建立<strong>星序帝国</strong>，连年征战收复失地。但被驱逐的炌零并未消亡——他在废土之上获得禁忌虚空技术，创立<strong>黯蚀王国</strong>，誓要夺回属于自己的遗产。昔日统一的蚀星帝国，彻底分裂为两大喵族势力，彼此仇视。</p>
-        <p>深海之中，海族主宰<strong>冥汐</strong>因上古喵族入侵之仇，打破万年沉默，率领<strong>潮汐神庭</strong>与汪族<strong>铁血堡垒</strong>（汪十二世统率）结成军事同盟，共同遏制星序帝国的复兴。而天空之上，羽族领袖<strong>羽尘</strong>坐镇<strong>听雨联邦</strong>，凭借灵巧战术固守浮空群岛，拒绝卷入任何一方，却在暗中观察着大陆的势力天平。</p>
-        <div class="quote">
-            “昔日的荣光已经碎裂，五方霸主各怀信念。科技、虚空、深海、蛮力、战术——五种截然不同的道路，将在星尘之下碰撞出最激烈的火花。战争，不过是信念的延伸。”
+      <section class="section" id="story">
+        <div class="section-title">
+          <h2 data-i18n="story_title">📜 纪元之卷 · 帝国裂变</h2>
+          <div class="sub" data-i18n="story_sub">滚动展开神秘的星域背景</div>
         </div>
-        <p>星序帝国的铁蹄、黯蚀王国的禁忌军团、潮汐神庭的深海巨兽、铁血堡垒的狂暴战士、听雨联邦的游击舰队……五大势力彼此制衡，战火烧遍大陆。没有永恒的朋友，也没有永恒的敌人，唯有卡牌对战中不变的意志。你将扮演哪一方势力的指挥官，在乱世中书写属于自己的战争脚本？</p>
-        <div style="margin-top: 1rem; text-align: right; font-size:0.85rem;">—— 序章「帝国裂痕」· 五大势力全面战争 ——</div>
-    </div>
-
-    <!-- 势力关系/特色简介 取代之前的阵营栏 -->
-    <div class="section-title"><span>⚔️ 势力特色 · 兵种相克 ⚔️</span></div>
-    <div style="display: flex; flex-wrap: nowrap; gap: 1rem; justify-content: center; margin-bottom: 2rem;">
-        <div style="background: #0e1a2faa; border-radius: 28px; padding: 1rem; width: 180px; text-align: center;"><i class="fas fa-microchip"></i> 星序：机械协同·精准打击</div>
-        <div style="background: #0e1a2faa; border-radius: 28px; padding: 1rem; width: 180px; text-align: center;"><i class="fas fa-skull-crossbones"></i> 黯蚀：虚空侵蚀·自愈死士</div>
-        <div style="background: #0e1a2faa; border-radius: 28px; padding: 1rem; width: 180px; text-align: center;"><i class="fas fa-water"></i> 潮汐：控场潮涌·巨兽召唤</div>
-        <div style="background: #0e1a2faa; border-radius: 28px; padding: 1rem; width: 180px; text-align: center;"><i class="fas fa-fist-raised"></i> 铁血：狂暴冲锋·愈战愈强</div>
-        <div style="background: #0e1a2faa; border-radius: 28px; padding: 1rem; width: 180px; text-align: center;"><i class="fas fa-feather-alt"></i> 听雨：灵动闪避·连击战术</div>
-    </div>
-
-    <!-- 游戏核心机制 -->
-    <div style="display: flex; flex-wrap: wrap; gap: 2rem; margin: 2rem 0; justify-content: center;">
-        <div style="flex:1; min-width: 200px; text-align: center; background: #07132eb3; border-radius: 24px; padding: 1.5rem;">
-            <i class="fas fa-layer-group" style="font-size: 2rem;"></i>
-            <h3>卡牌构筑</h3>
-            <p style="font-size: 0.85rem;">五大势力专属卡池，超过400张独特卡牌，机械、虚空、潮汐、蛮力、战术流派自由混搭。</p>
+        <div class="story-card">
+          <div class="story-panel">
+            <blockquote data-i18n="story_quote">
+              "昔日的荣光已经碎裂，五方霸主各怀信念，星域将由谁来书写？"
+            </blockquote>
+            <p data-i18n="story_desc">
+              蚀星帝国曾是星尘之下最辉煌的文明，然而近百年内，帝国裂变与天象失序同时降临。五大势力从旧秩序中崛起，兵锋与卡牌在每一座城市、每一条星路上重新书写战争脚本。
+            </p>
+          </div>
+          <div class="scroll-box">
+            <h3 data-i18n="story_summary">世界观摘要</h3>
+            <ul>
+              <li data-i18n="story_item_1">星尘之下由五大势力共享天赋与宿命</li>
+              <li data-i18n="story_item_2">每个势力都拥有独特的兵种与卡牌体系</li>
+              <li data-i18n="story_item_3">战争不止是胜负，更是命运与信念的碰撞</li>
+              <li data-i18n="story_item_4">分支战役会塑造不同的最终结局与版图</li>
+            </ul>
+          </div>
         </div>
-        <div style="flex:1; min-width: 200px; text-align: center; background: #07132eb3; border-radius: 24px; padding: 1.5rem;">
-            <i class="fas fa-chart-line" style="font-size: 2rem;"></i>
-            <h3>势力羁绊</h3>
-            <p style="font-size: 0.85rem;">同势力卡牌激活专属羁绊效果，搭配中立单位创造无限可能，战场局势瞬息万变。</p>
+      </section>
+
+      <section class="section" id="features">
+        <div class="section-title">
+          <h2 data-i18n="features_title">⚡ 战争脚本 · 即刻演算</h2>
+          <div class="sub" data-i18n="features_sub">卡牌构筑 · 势力羁绊 · 分支战役</div>
         </div>
-        <div style="flex:1; min-width: 200px; text-align: center; background: #07132eb3; border-radius: 24px; padding: 1.5rem;">
-            <i class="fas fa-history" style="font-size: 2rem;"></i>
-            <h3>分支战役</h3>
-            <p style="font-size: 0.85rem;">多结局剧情战役，每次关键对决影响大陆版图，五大势力结局由玩家亲手抉择。</p>
+        <div class="features-grid">
+          <article class="feature-card">
+            <div class="icon">🃏</div>
+            <h3 data-i18n="feature_1_name">卡牌构筑</h3>
+            <p data-i18n="feature_1_desc">400+张卡牌自由混搭，打造你的专属战术模板。</p>
+          </article>
+          <article class="feature-card">
+            <div class="icon">🔗</div>
+            <h3 data-i18n="feature_2_name">势力羁绊</h3>
+            <p data-i18n="feature_2_desc">同势力组合会触发独特效果，让阵营身份更加鲜明。</p>
+          </article>
+          <article class="feature-card">
+            <div class="icon">🌿</div>
+            <h3 data-i18n="feature_3_name">分支战役</h3>
+            <p data-i18n="feature_3_desc">每一次抉择都改变战局，推动不同的结局与命运走向。</p>
+          </article>
+          <article class="feature-card">
+            <div class="icon">📊</div>
+            <h3 data-i18n="feature_4_name">兵种相克</h3>
+            <p data-i18n="feature_4_desc">策略克制、阵型切换与兵种特性共同构成深度战术。</p>
+          </article>
+          <article class="feature-card">
+            <div class="icon">🎯</div>
+            <h3 data-i18n="feature_5_name">战术部署</h3>
+            <p data-i18n="feature_5_desc">实时对战中，部署时机决定成败，指挥与节奏同样重要。</p>
+          </article>
+          <article class="feature-card">
+            <div class="icon">🏆</div>
+            <h3 data-i18n="feature_6_name">天梯排行</h3>
+            <p data-i18n="feature_6_desc">竞技排名、段位晋升与头衔体系，持续推动竞争热度。</p>
+          </article>
         </div>
+      </section>
+
+      <section class="section" id="stats">
+        <div class="stats">
+          <div class="stat-box">
+            <span class="number" data-target="5" data-suffix="">0</span>
+            <span class="label" data-i18n="stat_1_label">大争霸势力</span>
+          </div>
+          <div class="stat-box">
+            <span class="number" data-target="8" data-suffix="">0</span>
+            <span class="label" data-i18n="stat_2_label">传奇领袖</span>
+          </div>
+          <div class="stat-box">
+            <span class="number" data-target="100" data-suffix="+">0</span>
+            <span class="label" data-i18n="stat_3_label">宿命分支</span>
+          </div>
+          <div class="stat-box">
+            <span class="number" data-target="400" data-suffix="+">0</span>
+            <span class="label" data-i18n="stat_4_label">独特卡牌</span>
+          </div>
+          <div class="stat-box">
+            <span class="number" data-target="12800" data-suffix="+">0</span>
+            <span class="label" data-i18n="stat_5_label">集结指挥官</span>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <div data-i18n="footer_title">⚔ 星尘之下 · 战争脚本</div>
+        <div data-i18n="footer_desc">世界观：蚀星裂变 · 五大势力 卡牌对决</div>
+        <div>© 2026 cait. <a href="license.html" style="color: #5ddcff; text-decoration: none; border-bottom: 1px dashed rgba(93, 220, 255, 0.5); padding-bottom: 2px; transition: all 0.25s ease;">MIT License</a></div>
+        <div style="font-size: 0.8rem; color: var(--muted); margin-top: 8px;">Open Source · MIT Licensed</div>
+      </footer>
     </div>
 
-    <!-- 游戏入口 -->
-    <div id="game">
-        <div class="game-cta">
-            <i class="fas fa-gamepad" style="font-size: 3rem; color:#5f9eff;"></i>
-            <h2>⚡ 战争脚本 · 即刻演算 ⚡</h2>
-            <p>选择五大势力之一，集结传奇英雄，改写星尘纪元</p>
-            <a href="https://pu-94.github.io/War-Script/game" class="btn btn-primary play-btn" target="_blank">
-                <i class="fas fa-rocket"></i> 进入游戏世界
-            </a>
-            <p style="margin-top: 1.2rem; font-size: 0.75rem; opacity: 0.7;"><i class="fas fa-code-branch"></i> 开发中 · 序章试玩即将开启 · 五大势力命运由你书写</p>
-        </div>
-    </div>
+    <script>
+      const canvas = document.getElementById('starfield');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
 
-    <!-- 蝴蝶隐喻（情感彩蛋） -->
-    <hr>
-    <div style="text-align: center; padding: 1rem;">
-        <i class="fas fa-butterfly" style="color: #b3d9ff; font-size: 1.6rem;"></i>
-        <p style="font-style: italic; max-width: 600px; margin: 0.5rem auto;">“你骑在我肩上，够到了蝴蝶——那是你最后一次那样笑。”<br>—— 炌铽 · 致兄弟，致分裂的帝国</p>
-        <p style="font-size: 0.7rem;">星序与黯蚀，同根相争；潮汐与铁血，誓死同盟；听雨云端俯瞰。五方混战，皆在星尘之下。</p>
-    </div>
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        particles = Array.from({ length: Math.min(120, Math.floor(window.innerWidth / 14)) }, () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 1.6 + 0.4,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.25,
+          alpha: Math.random() * 0.6 + 0.2
+        }));
+      }
 
-    <footer>
-        <p>© 星尘之下 · 战争脚本 | 世界观：蚀星裂变 | 星序帝国 · 黯蚀王国 · 潮汐神庭 · 铁血堡垒 · 听雨联邦</p>
-        <p>游戏本体位于 <strong>pu-94.github.io/War-Script/</strong> · 五大势力 卡牌对决 即将到来</p>
-    </footer>
-</div>
-
-<!-- 平滑滚动 -->
-<script>
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            if (href === "#" || href === "") return;
-            const target = document.querySelector(href);
-            if (target) {
-                e.preventDefault();
-                target.scrollIntoView({ behavior: 'smooth' });
-            }
+      function drawParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < -10) p.x = canvas.width + 10;
+          if (p.x > canvas.width + 10) p.x = -10;
+          if (p.y < -10) p.y = canvas.height + 10;
+          if (p.y > canvas.height + 10) p.y = -10;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+          ctx.fill();
         });
-    });
-</script>
-</body>
+        requestAnimationFrame(drawParticles);
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+      drawParticles();
+
+      const counters = document.querySelectorAll('.number');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const target = Number(entry.target.dataset.target || 0);
+          const suffix = entry.target.dataset.suffix || '';
+          let current = 0;
+          const step = Math.max(1, Math.floor(target / 60));
+          const timer = setInterval(() => {
+            current += step;
+            if (current >= target) {
+              entry.target.textContent = `${target.toLocaleString()}${suffix}`;
+              clearInterval(timer);
+            } else {
+              entry.target.textContent = `${current.toLocaleString()}`;
+            }
+          }, 18);
+          observer.unobserve(entry.target);
+        });
+      }, { threshold: 0.6 });
+
+      counters.forEach((counter) => observer.observe(counter));
+
+      // 检查登录状态
+      function checkLoginStatus() {
+        const user = localStorage.getItem('user');
+        const authActions = document.getElementById('auth-actions');
+        const userActions = document.getElementById('user-actions');
+        const usernameEl = document.getElementById('username');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        if (user) {
+          const userData = JSON.parse(user);
+          authActions.style.display = 'none';
+          userActions.style.display = 'flex';
+          usernameEl.textContent = userData.username;
+        } else {
+          authActions.style.display = 'flex';
+          userActions.style.display = 'none';
+        }
+
+        // 登出功能
+        logoutBtn.addEventListener('click', () => {
+          localStorage.removeItem('user');
+          checkLoginStatus();
+        });
+      }
+
+      checkLoginStatus();
+
+      // 语言切换功能
+      async function loadLocales() {
+        try {
+          const response = await fetch('locales.json');
+          return await response.json();
+        } catch (e) {
+          console.error('Failed to load locales:', e);
+          return null;
+        }
+      }
+
+      async function initI18n() {
+        const locales = await loadLocales();
+        if (!locales) return;
+
+        const currentLang = localStorage.getItem('lang') || 'zh';
+
+        function updateText(lang) {
+          const texts = locales[lang];
+          document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (texts[key]) {
+              el.innerHTML = texts[key];
+            }
+          });
+          // 更新语言按钮状态
+          document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+          document.getElementById(`lang-${lang}`)?.classList.add('active');
+          document.getElementById(`lang-${lang}-user`)?.classList.add('active');
+          localStorage.setItem('lang', lang);
+        }
+
+        // 设置初始语言
+        updateText(currentLang);
+
+        // 添加语言切换事件
+        document.getElementById('lang-zh')?.addEventListener('click', () => updateText('zh'));
+        document.getElementById('lang-en')?.addEventListener('click', () => updateText('en'));
+        document.getElementById('lang-zh-user')?.addEventListener('click', () => updateText('zh'));
+        document.getElementById('lang-en-user')?.addEventListener('click', () => updateText('en'));
+      }
+
+      initI18n();
+    </script>
+  </body>
 </html>

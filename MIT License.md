@@ -1,6 +1,28 @@
-MIT License
+# MIT License
 
 Copyright (c) 2026 cait
+
+---
+
+## 星尘之下 · 战争脚本 (Stardust Under · War Script)
+
+这是一款基于卡牌构筑的策略游戏网页应用，包含五大势力、分支战役、天梯排行等特色功能。
+
+### 项目结构
+
+- `index.html` - 主页面
+- `login/index.html` - 登录页面（集成 Supabase 认证）
+- `MIT License.md` - MIT 许可证
+
+### 技术栈
+
+- HTML5 / CSS3 / JavaScript (ES6+)
+- Supabase (用户认证与数据存储)
+- Canvas API (星尘粒子动画效果)
+
+---
+
+## 许可证条款
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

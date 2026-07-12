@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>星尘之下 · 登录</title>
+    <style>
+      :root {
+        --bg: #04070f;
+        --panel: rgba(10, 16, 33, 0.82);
+        --text: #f4f3ff;
+        --muted: #8fa0c7;
+        --gold: #f7c96b;
+        --blue: #5ddcff;
+        --purple: #b27cff;
+        --border: rgba(255, 255, 255, 0.14);
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(93, 220, 255, 0.18), transparent 28%),
+          radial-gradient(circle at 80% 20%, rgba(178, 124, 255, 0.2), transparent 22%),
+          linear-gradient(135deg, #03050a 0%, #060d18 55%, #02040b 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      canvas {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .login-container {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 420px;
+      }
+
+      .login-card {
+        padding: 40px;
+        border-radius: 24px;
+        background: rgba(10, 16, 33, 0.9);
+        border: 1px solid var(--border);
+        backdrop-filter: blur(20px);
+        box-shadow: var(--shadow);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 32px;
+      }
+
+      .brand-badge {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--gold), var(--blue));
+        color: #071119;
+        font-size: 20px;
+      }
+
+      .brand-title {
+        font-weight: 700;
+        font-size: 1.3rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.92rem;
+        color: var(--muted);
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 14px 18px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        font-size: 1rem;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(247, 201, 107, 0.15);
+      }
+
+      .form-group input::placeholder {
+        color: rgba(143, 160, 199, 0.5);
+      }
+
+      .btn {
+        width: 100%;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-primary {
+        color: #031321;
+        background: linear-gradient(135deg, var(--gold), #ffe08f);
+        box-shadow: 0 10px 30px rgba(247, 201, 107, 0.26);
+      }
+
+      .toggle-link {
+        text-align: center;
+        margin-top: 16px;
+      }
+
+      .toggle-link a {
+        color: var(--gold);
+        text-decoration: none;
+        font-size: 0.92rem;
+        transition: color 0.25s ease;
+      }
+
+      .toggle-link a:hover {
+        color: var(--blue);
+      }
+
+      .error-message {
+        display: none;
+        padding: 12px 16px;
+        border-radius: 10px;
+        background: rgba(255, 123, 95, 0.15);
+        border: 1px solid rgba(255, 123, 95, 0.3);
+        color: #ff7b5f;
+        font-size: 0.9rem;
+        margin-bottom: 16px;
+      }
+
+      .success-message {
+        display: none;
+        padding: 12px 16px;
+        border-radius: 10px;
+        background: rgba(99, 244, 176, 0.15);
+        border: 1px solid rgba(99, 244, 176, 0.3);
+        color: #63f4b0;
+        font-size: 0.9rem;
+        margin-bottom: 16px;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 24px;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .spinner {
+        display: none;
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-top-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .btn:disabled .btn-text {
+        display: none;
+      }
+
+      .btn:disabled .spinner {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="starfield"></canvas>
+    
+    <div class="login-container">
+      <div class="login-card">
+        <div class="brand">
+          <div class="brand-badge">⚔</div>
+          <span class="brand-title">星尘之下</span>
+        </div>
+
+        <div id="error-message" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
+
+        <!-- 登录表单 -->
+        <form id="login-form">
+          <div class="form-group">
+            <label for="email">邮箱</label>
+            <input type="email" id="email" placeholder="请输入邮箱" required />
+          </div>
+          <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" id="password" placeholder="请输入密码" required />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <span class="btn-text">登录</span>
+            <div class="spinner"></div>
+          </button>
+        </form>
+
+        <div class="toggle-link">
+          <a href="#" id="toggle-register">还没有账户？立即注册</a>
+        </div>
+
+        <!-- 注册表单 -->
+        <form id="register-form" style="display: none;">
+          <div class="form-group">
+            <label for="reg-email">邮箱</label>
+            <input type="email" id="reg-email" placeholder="请输入邮箱" required />
+          </div>
+          <div class="form-group">
+            <label for="reg-password">密码</label>
+            <input type="password" id="reg-password" placeholder="请输入密码（至少6位）" required />
+          </div>
+          <div class="form-group">
+            <label for="reg-username">用户名</label>
+            <input type="text" id="reg-username" placeholder="请输入用户名" required />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <span class="btn-text">注册</span>
+            <div class="spinner"></div>
+          </button>
+        </form>
+
+        <div class="toggle-link" style="display: none;" id="toggle-login">
+          <a href="#">已有账户？立即登录</a>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div>⚔ 星尘之下 · 战争脚本</div>
+        <div>© 2026 cait. Licensed under MIT License.</div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+      const supabaseUrl = 'https://dxacqzxcfolvpibqhtaf.supabase.co';
+      const supabaseKey = 'sb_publishable_2gGBDA2oWDVsAnOuZMd6Wg_vaM84znQ';
+      const supabase = createClient(supabaseUrl, supabaseKey);
+
+      const loginForm = document.getElementById('login-form');
+      const registerForm = document.getElementById('register-form');
+      const toggleRegister = document.getElementById('toggle-register');
+      const toggleLogin = document.getElementById('toggle-login');
+      const errorMessage = document.getElementById('error-message');
+      const successMessage = document.getElementById('success-message');
+
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+        successMessage.style.display = 'none';
+        setTimeout(() => {
+          errorMessage.style.display = 'none';
+        }, 5000);
+      }
+
+      function showSuccess(message) {
+        successMessage.textContent = message;
+        successMessage.style.display = 'block';
+        errorMessage.style.display = 'none';
+        setTimeout(() => {
+          successMessage.style.display = 'none';
+        }, 5000);
+      }
+
+      toggleRegister.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        toggleRegister.style.display = 'none';
+        toggleLogin.style.display = 'block';
+      });
+
+      toggleLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        registerForm.style.display = 'none';
+        loginForm.style.display = 'block';
+        toggleLogin.style.display = 'none';
+        toggleRegister.style.display = 'block';
+      });
+
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const submitBtn = loginForm.querySelector('button');
+        
+        submitBtn.disabled = true;
+
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) {
+          if (error.message.includes('Email not confirmed')) {
+            showError('邮箱尚未确认，请检查邮件或点击下方按钮重新发送确认邮件');
+            const resendBtn = document.createElement('button');
+            resendBtn.textContent = '重新发送确认邮件';
+            resendBtn.className = 'btn btn-secondary';
+            resendBtn.onclick = async () => {
+              resendBtn.disabled = true;
+              resendBtn.textContent = '发送中...';
+              const { error: resendError } = await supabase.auth.resendConfirmationEmail({ email });
+              if (resendError) {
+                showError(resendError.message);
+              } else {
+                showSuccess('确认邮件已发送，请查收');
+              }
+              resendBtn.disabled = false;
+              resendBtn.textContent = '重新发送确认邮件';
+            };
+            errorMessage.parentNode.insertBefore(resendBtn, errorMessage.nextSibling);
+          } else {
+            showError(error.message);
+          }
+        } else {
+          // 保存用户信息到 localStorage
+          const user = data.user;
+          localStorage.setItem('user', JSON.stringify({
+            id: user.id,
+            email: user.email,
+            username: user.user_metadata?.username || '用户',
+            avatar_url: user.avatar_url
+          }));
+          showSuccess('登录成功！正在跳转...');
+          setTimeout(() => {
+            window.location.href = '../index.html';
+          }, 1500);
+        }
+
+        submitBtn.disabled = false;
+      });
+
+      registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+        const username = document.getElementById('reg-username').value;
+        const submitBtn = registerForm.querySelector('button');
+        
+        submitBtn.disabled = true;
+
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              username: username
+            }
+          }
+        });
+
+        if (error) {
+          showError(error.message);
+        } else {
+          showSuccess('注册成功！请登录...');
+          setTimeout(() => {
+            registerForm.style.display = 'none';
+            loginForm.style.display = 'block';
+            toggleLogin.style.display = 'none';
+            toggleRegister.style.display = 'block';
+            document.getElementById('email').value = email;
+          }, 2000);
+        }
+
+        submitBtn.disabled = false;
+      });
+
+      // 星尘背景动画
+      const canvas = document.getElementById('starfield');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        particles = Array.from({ length: Math.min(100, Math.floor(window.innerWidth / 16)) }, () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 1.4 + 0.3,
+          vx: (Math.random() - 0.5) * 0.2,
+          vy: (Math.random() - 0.5) * 0.2,
+          alpha: Math.random() * 0.5 + 0.2
+        }));
+      }
+
+      function drawParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < -10) p.x = canvas.width + 10;
+          if (p.x > canvas.width + 10) p.x = -10;
+          if (p.y < -10) p.y = canvas.height + 10;
+          if (p.y > canvas.height + 10) p.y = -10;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+          ctx.fill();
+        });
+        requestAnimationFrame(drawParticles);
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+      drawParticles();
+    </script>
+  </body>
+</html>
