@@ -550,7 +550,7 @@
           <a class="btn btn-primary" href="#" data-i18n="enter_game_btn">⚔ 进入游戏</a>
           <a class="btn btn-ghost" href="#story" data-i18n="read_story">📖 阅览星史</a>
         </div>
-        <div class="meta" data-i18n="meta">已有 12,847 位指挥官集结，开启新的纪元之战。</div>
+        <div class="meta" id="user-count-text" data-i18n="meta"></div>
       </section>
 
       <section class="section" id="factions">
@@ -690,7 +690,28 @@
       </footer>
     </div>
 
-    <script>
+    <script type="module">
+      import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+      const supabaseUrl = 'https://dxacqzxcfolvpibqhtaf.supabase.co';
+      const supabaseKey = 'sb_publishable_2gGBDA2oWDVsAnOuZMd6Wg_vaM84znQ';
+      const supabase = createClient(supabaseUrl, supabaseKey);
+
+      async function getUserCount() {
+        try {
+          const { data, error } = await supabase
+            .from('user_stats')
+            .select('total_users')
+            .single();
+          
+          if (error) throw error;
+          return data?.total_users || 12800;
+        } catch (e) {
+          console.warn('无法获取用户数，使用默认值:', e.message);
+          return 12800;
+        }
+      }
+
       const canvas = document.getElementById('starfield');
       const ctx = canvas.getContext('2d');
       let particles = [];
@@ -729,28 +750,47 @@
       resizeCanvas();
       drawParticles();
 
-      const counters = document.querySelectorAll('.number');
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          const target = Number(entry.target.dataset.target || 0);
-          const suffix = entry.target.dataset.suffix || '';
-          let current = 0;
-          const step = Math.max(1, Math.floor(target / 60));
-          const timer = setInterval(() => {
-            current += step;
-            if (current >= target) {
-              entry.target.textContent = `${target.toLocaleString()}${suffix}`;
-              clearInterval(timer);
-            } else {
-              entry.target.textContent = `${current.toLocaleString()}`;
-            }
-          }, 18);
-          observer.unobserve(entry.target);
-        });
-      }, { threshold: 0.6 });
+      async function initCounters() {
+        const userCount = await getUserCount();
+        
+        const metaEl = document.getElementById('user-count-text');
+        if (metaEl) {
+          const lang = localStorage.getItem('lang') || 'zh';
+          metaEl.textContent = lang === 'zh' 
+            ? `已有 ${userCount.toLocaleString()} 位指挥官集结，开启新的纪元之战。`
+            : `${userCount.toLocaleString()} Commanders have gathered to start a new era.`;
+        }
 
-      counters.forEach((counter) => observer.observe(counter));
+        const userCountEl = document.querySelector('.stat-box:nth-child(5) .number');
+        if (userCountEl) {
+          userCountEl.dataset.target = userCount;
+        }
+
+        const counters = document.querySelectorAll('.number');
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const target = Number(entry.target.dataset.target || 0);
+            const suffix = entry.target.dataset.suffix || '';
+            let current = 0;
+            const step = Math.max(1, Math.floor(target / 60));
+            const timer = setInterval(() => {
+              current += step;
+              if (current >= target) {
+                entry.target.textContent = `${target.toLocaleString()}${suffix}`;
+                clearInterval(timer);
+              } else {
+                entry.target.textContent = `${current.toLocaleString()}`;
+              }
+            }, 18);
+            observer.unobserve(entry.target);
+          });
+        }, { threshold: 0.6 });
+
+        counters.forEach((counter) => observer.observe(counter));
+      }
+
+      initCounters();
 
       // 检查登录状态
       function checkLoginStatus() {
@@ -821,7 +861,7 @@
         document.getElementById('lang-en-user')?.addEventListener('click', () => updateText('en'));
       }
 
-      initI18n();
+      initI18n().then(() => initCounters());
     </script>
   </body>
 </html>
