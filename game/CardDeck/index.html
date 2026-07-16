@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -443,7 +444,8 @@
       border-top: 1px solid var(--border);
     }
 
-    .card-edit-btn, .card-delete-btn {
+    .card-edit-btn,
+    .card-delete-btn {
       flex: 1;
       padding: 4px 8px;
       font-size: 11px;
@@ -467,6 +469,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="game-container">
     <div class="topbar">
@@ -520,11 +523,11 @@
           <span class="property-value cost" id="modalCardCost">-</span>
         </div>
         <div class="property-item">
-          <span class="property-label">ATK</span>
+          <span class="property-label">攻击</span>
           <span class="property-value atk" id="modalCardAtk">-</span>
         </div>
         <div class="property-item">
-          <span class="property-label">HP</span>
+          <span class="property-label">血量</span>
           <span class="property-value hp" id="modalCardHp">-</span>
         </div>
         <div class="property-item">
@@ -548,11 +551,14 @@
       <div class="property-list">
         <div class="property-item">
           <span class="property-label">名称</span>
-          <input type="text" id="newCardName" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 150px;" placeholder="卡牌名称" />
+          <input type="text" id="newCardName"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 150px;"
+            placeholder="卡牌名称" />
         </div>
         <div class="property-item">
           <span class="property-label">类型</span>
-          <select id="newCardType" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px;">
+          <select id="newCardType"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px;">
             <option value="单位">单位</option>
             <option value="法术">法术</option>
             <option value="装备">装备</option>
@@ -560,31 +566,45 @@
         </div>
         <div class="property-item">
           <span class="property-label">费用</span>
-          <input type="number" id="newCardCost" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;" value="1" min="0" />
+          <input type="number" id="newCardCost"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            value="1" min="0" />
         </div>
         <div class="property-item">
           <span class="property-label">ATK</span>
-          <input type="number" id="newCardAttack" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;" value="1" min="0" />
+          <input type="number" id="newCardAttack"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            value="1" min="0" />
         </div>
         <div class="property-item">
           <span class="property-label">HP</span>
-          <input type="number" id="newCardHealth" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;" value="1" min="0" />
+          <input type="number" id="newCardHealth"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            value="1" min="0" />
         </div>
         <div class="property-item">
           <span class="property-label">阵营</span>
-          <input type="text" id="newCardFaction" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;" placeholder="如 ⚙️" />
+          <input type="text" id="newCardFaction"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            placeholder="如 ⚙️" />
         </div>
         <div class="property-item">
           <span class="property-label">图标</span>
-          <input type="text" id="newCardIcon" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;" placeholder="如 ⚔️" />
+          <input type="text" id="newCardIcon"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            placeholder="如 ⚔️" />
         </div>
         <div class="property-item">
           <span class="property-label">词条</span>
-          <input type="text" id="newCardKeywords" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 150px;" placeholder="用逗号分隔" />
+          <input type="text" id="newCardKeywords"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 150px;"
+            placeholder="用逗号分隔" />
         </div>
         <div class="property-item">
           <span class="property-label">描述</span>
-          <input type="text" id="newCardDesc" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 180px;" placeholder="卡牌描述" />
+          <input type="text" id="newCardDesc"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 180px;"
+            placeholder="卡牌描述" />
         </div>
       </div>
       <button class="confirm-btn" onclick="addNewCard()">确认添加</button>
@@ -601,11 +621,14 @@
       <div class="property-list">
         <div class="property-item">
           <span class="property-label">名称</span>
-          <input type="text" id="editCardName" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 150px;" placeholder="卡牌名称" />
+          <input type="text" id="editCardName"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 150px;"
+            placeholder="卡牌名称" />
         </div>
         <div class="property-item">
           <span class="property-label">类型</span>
-          <select id="editCardType" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px;">
+          <select id="editCardType"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px;">
             <option value="单位">单位</option>
             <option value="法术">法术</option>
             <option value="装备">装备</option>
@@ -613,31 +636,45 @@
         </div>
         <div class="property-item">
           <span class="property-label">费用</span>
-          <input type="number" id="editCardCost" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;" value="1" min="0" />
+          <input type="number" id="editCardCost"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            value="1" min="0" />
         </div>
         <div class="property-item">
           <span class="property-label">ATK</span>
-          <input type="number" id="editCardAttack" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;" value="1" min="0" />
+          <input type="number" id="editCardAttack"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            value="1" min="0" />
         </div>
         <div class="property-item">
           <span class="property-label">HP</span>
-          <input type="number" id="editCardHealth" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;" value="1" min="0" />
+          <input type="number" id="editCardHealth"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            value="1" min="0" />
         </div>
         <div class="property-item">
           <span class="property-label">阵营</span>
-          <input type="text" id="editCardFaction" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;" placeholder="如 ⚙️" />
+          <input type="text" id="editCardFaction"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            placeholder="如 ⚙️" />
         </div>
         <div class="property-item">
           <span class="property-label">图标</span>
-          <input type="text" id="editCardIcon" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;" placeholder="如 ⚔️" />
+          <input type="text" id="editCardIcon"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            placeholder="如 ⚔️" />
         </div>
         <div class="property-item">
           <span class="property-label">词条</span>
-          <input type="text" id="editCardKeywords" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 150px;" placeholder="用逗号分隔" />
+          <input type="text" id="editCardKeywords"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 150px;"
+            placeholder="用逗号分隔" />
         </div>
         <div class="property-item">
           <span class="property-label">描述</span>
-          <input type="text" id="editCardDesc" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 180px;" placeholder="卡牌描述" />
+          <input type="text" id="editCardDesc"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 180px;"
+            placeholder="卡牌描述" />
         </div>
       </div>
       <button class="confirm-btn" onclick="updateCard()">保存修改</button>
@@ -658,29 +695,29 @@
     async function loadCards() {
       const userStr = localStorage.getItem('user');
       const user = userStr ? JSON.parse(userStr) : null;
-      
+
       if (user) {
         const { data: adminData } = await supabase
           .from('admins')
           .select('username')
           .eq('username', user.username)
           .single();
-        
+
         isAdmin = !!adminData;
         if (isAdmin) {
           document.getElementById('adminBtn').style.display = 'block';
         }
       }
-      
+
       const { data, error } = await supabase.from('cards').select('*');
       if (error) {
         console.error('加载卡牌失败:', error);
-        document.getElementById('cardPool').innerHTML = 
+        document.getElementById('cardPool').innerHTML =
           `<div class="empty-hint">加载卡牌失败: ${error.message}<br>请检查Supabase RLS策略</div>`;
         return;
       }
       if (!data || data.length === 0) {
-        document.getElementById('cardPool').innerHTML = 
+        document.getElementById('cardPool').innerHTML =
           `<div class="empty-hint">卡牌库为空<br>请在Supabase中添加卡牌数据</div>`;
         return;
       }
@@ -692,13 +729,13 @@
           .select('cards')
           .eq('user_id', user.id)
           .single();
-        
+
         if (deckData && deckData.cards) {
           const savedCardIds = deckData.cards;
           selectedCards = cardData.filter(c => savedCardIds.includes(c.id));
         }
       }
-      
+
       renderCardPool();
       renderSelectedList();
     }
@@ -732,9 +769,9 @@
     function renderSelectedList() {
       const list = document.getElementById('selectedList');
       const count = document.getElementById('deckCount');
-      
+
       count.textContent = `${selectedCards.length}/30`;
-      
+
       if (selectedCards.length === 0) {
         list.innerHTML = '<div class="empty-hint">点击卡牌添加到卡组</div>';
         return;
@@ -785,7 +822,7 @@
       document.getElementById('modalCardAtk').textContent = card.attack || 0;
       document.getElementById('modalCardHp').textContent = card.health || 0;
       document.getElementById('modalCardDesc').textContent = card.desc || '无';
-      
+
       const keywordsEl = document.getElementById('modalCardKeywords');
       if (card.keywords && card.keywords.length > 0) {
         keywordsEl.innerHTML = card.keywords.map(k => `<span class="keyword-tag">${k}</span>`).join('');
@@ -800,19 +837,19 @@
       document.getElementById('propertyModal').classList.remove('active');
     }
 
-    document.getElementById('propertyModal').addEventListener('click', function(e) {
+    document.getElementById('propertyModal').addEventListener('click', function (e) {
       if (e.target === this) {
         closeModal();
       }
     });
 
-    document.getElementById('addCardModal').addEventListener('click', function(e) {
+    document.getElementById('addCardModal').addEventListener('click', function (e) {
       if (e.target === this) {
         closeAddCardModal();
       }
     });
 
-    document.getElementById('editCardModal').addEventListener('click', function(e) {
+    document.getElementById('editCardModal').addEventListener('click', function (e) {
       if (e.target === this) {
         closeEditCardModal();
       }
@@ -825,7 +862,7 @@
         return;
       }
       const user = JSON.parse(userStr);
-      
+
       if (selectedCards.length < 1) {
         alert('卡组至少需要1张卡牌');
         return;
@@ -834,7 +871,7 @@
       const { error } = await supabase
         .from('user_deck')
         .upsert({ user_id: user.id, cards: cardIds }, { onConflict: 'user_id' });
-      
+
       if (error) {
         console.error('保存卡组失败:', error);
         alert('保存失败: ' + error.message);
@@ -1012,4 +1049,5 @@
     loadCards();
   </script>
 </body>
+
 </html>
