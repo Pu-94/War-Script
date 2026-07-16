@@ -52,7 +52,7 @@
       justify-content: space-between;
       padding: 12px 20px;
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 0px;
       background: rgba(6, 11, 23, 0.7);
       backdrop-filter: blur(18px);
       box-shadow: var(--shadow);
@@ -70,7 +70,7 @@
     .brand-badge {
       width: 36px;
       height: 36px;
-      border-radius: 50%;
+      border-radius: 0%;
       display: grid;
       place-items: center;
       background: linear-gradient(135deg, var(--gold), var(--blue));
@@ -85,7 +85,7 @@
 
     .back-btn {
       padding: 8px 16px;
-      border-radius: 8px;
+      border-radius: 0px;
       border: 1px solid var(--border);
       background: rgba(255, 255, 255, 0.05);
       color: var(--text);
@@ -99,7 +99,7 @@
 
     .admin-btn {
       padding: 8px 16px;
-      border-radius: 8px;
+      border-radius: 0px;
       border: 1px solid var(--gold);
       background: rgba(247, 201, 107, 0.15);
       color: var(--gold);
@@ -121,7 +121,7 @@
       flex: 1;
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 0px;
       padding: 20px;
       overflow-y: auto;
     }
@@ -138,7 +138,7 @@
       width: 340px;
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 0px;
       padding: 20px;
       display: flex;
       flex-direction: column;
@@ -181,7 +181,7 @@
       position: relative;
       background: linear-gradient(180deg, #1a2238 0%, #0f1525 100%);
       border: 2px solid var(--border);
-      border-radius: 12px;
+      border-radius: 0px;
       padding: 12px;
       cursor: pointer;
       transition: all 0.2s;
@@ -244,7 +244,7 @@
       gap: 10px;
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 0px;
       padding: 10px 12px;
       cursor: pointer;
       transition: all 0.2s;
@@ -263,7 +263,7 @@
     .selected-card .remove-btn {
       width: 20px;
       height: 20px;
-      border-radius: 4px;
+      border-radius: 0px;
       border: none;
       background: rgba(255, 123, 95, 0.2);
       color: var(--red);
@@ -290,7 +290,7 @@
     .modal {
       background: var(--panel-strong);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 0px;
       padding: 24px;
       width: 320px;
       box-shadow: var(--shadow);
@@ -312,7 +312,7 @@
     .modal-close {
       width: 28px;
       height: 28px;
-      border-radius: 6px;
+      border-radius: 0px;
       border: none;
       background: rgba(255, 255, 255, 0.1);
       color: var(--muted);
@@ -336,7 +336,7 @@
       gap: 12px;
       padding: 10px 12px;
       background: rgba(255, 255, 255, 0.03);
-      border-radius: 8px;
+      border-radius: 0px;
     }
 
     .property-label {
@@ -388,7 +388,7 @@
     .keyword-tag {
       padding: 2px 8px;
       background: rgba(93, 220, 255, 0.15);
-      border-radius: 4px;
+      border-radius: 0px;
       font-size: 11px;
       color: var(--blue);
     }
@@ -404,7 +404,7 @@
       width: 100%;
       padding: 12px;
       margin-top: 20px;
-      border-radius: 8px;
+      border-radius: 0px;
       border: none;
       background: linear-gradient(135deg, var(--gold), #e5a84b);
       color: #071119;
@@ -423,7 +423,7 @@
       right: 8px;
       width: 20px;
       height: 20px;
-      border-radius: 50%;
+      border-radius: 0%;
       background: var(--gold);
       display: none;
       align-items: center;
@@ -449,7 +449,7 @@
       flex: 1;
       padding: 4px 8px;
       font-size: 11px;
-      border-radius: 4px;
+      border-radius: 0px;
       border: 1px solid var(--border);
       background: rgba(255, 255, 255, 0.05);
       color: var(--muted);
@@ -552,13 +552,13 @@
         <div class="property-item">
           <span class="property-label">名称</span>
           <input type="text" id="newCardName"
-            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 150px;"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 0px; width: 150px;"
             placeholder="卡牌名称" />
         </div>
         <div class="property-item">
           <span class="property-label">类型</span>
           <select id="newCardType"
-            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px;">
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 0px;">
             <option value="单位">单位</option>
             <option value="法术">法术</option>
             <option value="装备">装备</option>
@@ -567,43 +567,43 @@
         <div class="property-item">
           <span class="property-label">费用</span>
           <input type="number" id="newCardCost"
-            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 0px; width: 80px;"
             value="1" min="0" />
         </div>
         <div class="property-item">
           <span class="property-label">ATK</span>
           <input type="number" id="newCardAttack"
-            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 0px; width: 80px;"
             value="1" min="0" />
         </div>
         <div class="property-item">
           <span class="property-label">HP</span>
           <input type="number" id="newCardHealth"
-            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 0px; width: 80px;"
             value="1" min="0" />
         </div>
         <div class="property-item">
           <span class="property-label">阵营</span>
           <input type="text" id="newCardFaction"
-            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 0px; width: 80px;"
             placeholder="如 ⚙️" />
         </div>
         <div class="property-item">
           <span class="property-label">图标</span>
           <input type="text" id="newCardIcon"
-            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 80px;"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 0px; width: 80px;"
             placeholder="如 ⚔️" />
         </div>
         <div class="property-item">
           <span class="property-label">词条</span>
           <input type="text" id="newCardKeywords"
-            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 150px;"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 0px; width: 150px;"
             placeholder="用逗号分隔" />
         </div>
         <div class="property-item">
           <span class="property-label">描述</span>
           <input type="text" id="newCardDesc"
-            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 4px; width: 180px;"
+            style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 0px; width: 180px;"
             placeholder="卡牌描述" />
         </div>
       </div>
